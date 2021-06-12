@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public class LevelState
 {
@@ -46,18 +47,21 @@ public class LevelState
                 switch(p[0])
                 {
                     case "a":
+                        ValidateParameterCount(p, 4, i);
                         if (aPosition.HasValue) throw new Exception("A postion was defined twice");
                         aPosition = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
                         aLength = ParseIntValue(p[3], i);
                         break;
 
                     case "b":
+                        ValidateParameterCount(p, 4, i);
                         if (bPosition.HasValue) throw new Exception("B postion was defined twice");
                         bPosition = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
                         bLength = ParseIntValue(p[3], i);
                         break;
 
                     case "w":
+                        ValidateParameterCount(p, 5, i);
                         int startX = ParseIntValue(p[1], i);
                         int startY = ParseIntValue(p[2], i);
                         int width = ParseIntValue(p[3], i);
@@ -73,9 +77,11 @@ public class LevelState
                         break;
 
                     case "s":
+                        ValidateParameterCount(p, 4, i);
                         int starX = ParseIntValue(p[1], i);
                         int starY = ParseIntValue(p[2], i);
-                        if (starX >= horizontalSize || starY > verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
+                        if (starX >= horizontalSize || starY >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
+                        Debug.Log($"{i},[{starX},{starY}]{horizontalSize},{verticalSize}");
                         map[starX, starY] = new TileTypes.Star()
                         {
                             color = p[3]
@@ -93,6 +99,19 @@ public class LevelState
         {
             throw new ArgumentException("The map does not specify the starting conditions of A and B!");
         }
+    }
+
+    public TileTypes.Tile this[int x, int y]
+    {
+        get
+        {
+            return map[x, y];
+        }
+    }
+
+    private void ValidateParameterCount(string[] parameters, int expectedCount, int lineNumber)
+    {
+        if (parameters.Length != expectedCount) throw new ArgumentException($"Line {lineNumber}: Expected {expectedCount} parameters, got {parameters.Length} parameters");
     }
 
     private int ParseIntValue (string source, int lineNumber, bool mustBePositive = true)
