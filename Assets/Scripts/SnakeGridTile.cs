@@ -18,7 +18,7 @@ public abstract class SnakeGridTile : MonoBehaviour
             }
             else
             {
-                this.transform.position = new Vector2(value.x, value.y) * parentGrid.GridSize;
+                this.transform.position = new Vector2(value.x, value.y) * parentGrid.GridSize + parentGrid.GridCellOffset;
             }
         }
     }

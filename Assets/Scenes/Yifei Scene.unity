@@ -239,6 +239,55 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &594650549
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 594650551}
+  - component: {fileID: 594650550}
+  m_Layer: 0
+  m_Name: Render Script
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &594650550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594650549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e74fb82f3037dc4aa26aecbcfeb6129, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
+  redStarColor: {r: 0.9433962, g: 0.5320369, b: 0, a: 1}
+  blueStarColor: {r: 0, g: 0.092921734, b: 1, a: 1}
+  emptyTile: {fileID: 2230063531616197720, guid: d476aaa7260316e47ae036defd91fd2f, type: 3}
+  wallTile: {fileID: 2123589179996810194, guid: eda9774c3b4b16749b05418de01ae54c, type: 3}
+  starTile: {fileID: 2746868760496628487, guid: 990fa7f6baf93644a9c54940fff72904, type: 3}
+--- !u!4 &594650551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594650549}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &970228419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -390,6 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GridSize: 1
+  GridCellOffset: {x: 0, y: 0}
 --- !u!1 &1379626259
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,8 +517,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d504c693d0853740b8e41e7b7d99b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelName: 1
-  levelRenderer: {fileID: 0}
+  levelName: testLvl
+  levelRenderer: {fileID: 594650550}
   TickSpeed: 0.2
 --- !u!4 &1541677623
 Transform:

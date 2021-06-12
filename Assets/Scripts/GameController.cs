@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -9,6 +10,11 @@ public class GameController : MonoBehaviour
     public string levelName;
     public RenderScript levelRenderer;
 
+    public PlayerController PlayerAPrefab;
+    public PlayerController PlayerBPrefab;
+
+    private List<PlayerController> players;
+
     /// <summary>
     /// Number of seconds between each game update
     /// </summary>
@@ -18,6 +24,37 @@ public class GameController : MonoBehaviour
 
     public void Start()
     {
+
+    }
+
+    private void Update()
+    {
+
+    }
+
+    private void DestroyOldGame()
+    {
+        if (this.players != null)
+        {
+            foreach (var player in this.players)
+            {
+                Destroy(player.gameObject);
+            }
+            this.players = null;
+        }
+
+        if (this.ExecuteGameCoroutine != null)
+        {
+            StopCoroutine(this.ExecuteGameCoroutine);
+            this.ExecuteGameCoroutine = null;
+        }
+    }
+
+    public void StartGame()
+    {
+        this.DestroyOldGame();
+
+        // load level
         if (this.levelRenderer != null)
         {
             var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
@@ -25,17 +62,17 @@ public class GameController : MonoBehaviour
             levelRenderer.Render(_level);
         }
 
+        // Keep track of static isntance
+        if (staticInstance)
+        {
+            Destroy(staticInstance.gameObject);
+        }
+        staticInstance = this;
+
         // Start game
         this.ExecuteGameCoroutine = StartCoroutine(this.ExecuteGame());
-
-        if (staticInstance) Destroy(staticInstance.gameObject);
-        staticInstance = this;
     }
 
-    private void Update()
-    {
-
-    }
 
     private IEnumerator ExecuteGame()
     {
