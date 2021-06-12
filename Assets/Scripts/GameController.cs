@@ -4,7 +4,6 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     private LevelState _level;
-
     public string levelName;
     public RenderScript levelRenderer;
 
@@ -13,11 +12,19 @@ public class GameController : MonoBehaviour
     /// </summary>
     public float TickSpeed;
 
+    private Coroutine ExecuteGameCoroutine;
+
     public void Start()
     {
-        var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
-        _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
-        levelRenderer.Render(_level);
+        if (this.levelRenderer != null)
+        {
+            var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
+            _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
+            levelRenderer.Render(_level);
+        }
+
+        // Start game
+        this.ExecuteGameCoroutine = StartCoroutine(this.ExecuteGame());
     }
 
     private void Update()
@@ -25,12 +32,15 @@ public class GameController : MonoBehaviour
 
     }
 
-    private IEnumerator ExecuteGameCycle()
+    private IEnumerator ExecuteGame()
     {
-        this.GameUpdate();
+        while (true)
+        {
+            this.GameUpdate();
 
-        // Check for player collision
-        yield return new WaitForSeconds(this.TickSpeed);
+            // Check for player collision
+            yield return new WaitForSeconds(this.TickSpeed);
+        }
     }
 
     private void GameUpdate()
