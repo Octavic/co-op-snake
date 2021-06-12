@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour
     private LevelState _level;
 
     public string levelName;
+    public RenderScript levelRenderer;
 
     /// <summary>
     /// Number of seconds between each game update
@@ -16,6 +17,7 @@ public class GameController : MonoBehaviour
     {
         var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
         _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
+        levelRenderer.Render(_level);
     }
 
     private void Update()
