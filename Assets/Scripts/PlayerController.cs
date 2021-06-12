@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float GridSize;
     public List<KeyCode> ControlKeys;
     public DirectionEnum CurrentlyFacing;
     public PlayerSegment SegmentPrefab;
@@ -22,8 +21,7 @@ public class PlayerController : MonoBehaviour
         },
         {
             DirectionEnum.Down, new Vector2(0, -1)
-        }
-        ,
+        },
         {
             DirectionEnum.Left, new Vector2(-1, 0)
         },
@@ -43,6 +41,10 @@ public class PlayerController : MonoBehaviour
     {
         get
         {
+            if (this.Body.Count < 2)
+            {
+                return null;
+            }
             return this.Body[1];
         }
     }
@@ -85,6 +87,13 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(this.ControlKeys[i]))
             {
                 var newFacing = Directions[i];
+
+                if (this.Neck == null)
+                {
+                    this.CurrentlyFacing = newFacing;
+                    continue;
+                }
+
                 var potentialHeadCoor = this.Head.Coordinate + Movements[newFacing];
                 if (potentialHeadCoor != this.Neck.Coordinate)
                 {
@@ -102,7 +111,6 @@ public class PlayerController : MonoBehaviour
         var newHeadCoor = this.Head.Coordinate + Movements[this.CurrentlyFacing];
         var newHead = Instantiate(this.SegmentPrefab, this.transform);
         newHead.Coordinate = newHeadCoor;
-        newHead.transform.position = newHeadCoor * this.GridSize;
         this.Body.Insert(0, newHead);
         if (this.PendingPieces > 0)
         {
