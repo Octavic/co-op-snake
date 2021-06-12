@@ -8,8 +8,7 @@ public class RenderScript : MonoBehaviour
     public Camera mainCamera;
 
     [Header("Config")]
-    public Color redStarColor;
-    public Color blueStarColor;
+    public Color[] starColors;
 
     [Header("Prefabs")]
     public GameObject emptyTile;
@@ -51,7 +50,7 @@ public class RenderScript : MonoBehaviour
                 {
                     tiles[x, y] = Instantiate(emptyTile, tilePos, new Quaternion());
                     var star = Instantiate(starTile, tiles[x,y].transform);
-                    star.GetComponent<SpriteRenderer>().color = ((TileTypes.Star)tile).color == "R" ? redStarColor : blueStarColor;
+                    star.GetComponent<SpriteRenderer>().color = starColors[((TileTypes.Star)tile).color];
                 }
                 tiles[x, y].transform.parent = this.transform;
                 tiles[x, y].name = $"[{x},{y}]";
