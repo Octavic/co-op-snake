@@ -26,6 +26,10 @@ public class LevelState
 
     private TileTypes.Tile[,] map;
 
+    // Offset for unity transform positions
+    private float xOffset;
+    private float yOffset;
+
     public LevelState(string[] file)
     {
         if (file[0] != "snake level format v1") throw new NotSupportedException("Only v1 format is supported");
@@ -38,6 +42,9 @@ public class LevelState
         playerStartLength = new int[playerCount];
 
         map = new TileTypes.Tile[horizontalSize, verticalSize];
+
+        xOffset = (horizontalSize - 1) / 2f;
+        yOffset = (verticalSize - 1) / 2f;
 
         bool parsingContent = false;
         for(int i = 0; i < file.Length; i++)
@@ -169,5 +176,10 @@ public class LevelState
         }
         if (map[x, y] == null) return;
         else map[x, y].Activate(this, player);
+    }
+
+    public Vector3 CoordinateToWorldPosition (Coordinate coordinate)
+    {
+        return new Vector3(coordinate.x - xOffset, coordinate.y - yOffset);
     }
 }
