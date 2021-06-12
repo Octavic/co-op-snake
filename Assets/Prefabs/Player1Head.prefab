@@ -53,16 +53,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Color.b
-      value: 0.4433962
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Color.g
-      value: 0.4433962
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Color.r
-      value: 0.4433962
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9fdf335804cd78249b8b52c2d1315b54, type: 2}
     - target: {fileID: 2366169118045538934, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Name
       value: HeadSegment
