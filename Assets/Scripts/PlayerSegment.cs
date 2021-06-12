@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerSegment : SnakeGridTile
 {
-    public Vector2 Coordinate
+    public Coordinate Coordinate
     {
         get
         {
@@ -12,10 +12,10 @@ public class PlayerSegment : SnakeGridTile
         set
         {
             this._coordinate = value;
-            this.transform.position = value * this.GetComponentInParent<SnakeGrid>().GridSize;
+            this.transform.position = new Vector2(value.x, value.y) * this.GetComponentInParent<SnakeGrid>().GridSize;
         }
     }
-    private Vector2 _coordinate;
+    private Coordinate _coordinate;
 
     public override void OnPlayerHeadEnter(PlayerController enteredPlayer)
     {

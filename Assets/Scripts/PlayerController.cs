@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public List<KeyCode> ControlKeys;
     public DirectionEnum CurrentlyFacing;
     public PlayerSegment SegmentPrefab;
+    public PlayerSegment HeadPrefab;
 
     private static List<DirectionEnum> Directions = new List<DirectionEnum>() {
         DirectionEnum.Right,
@@ -14,19 +15,19 @@ public class PlayerController : MonoBehaviour
         DirectionEnum.Left,
         DirectionEnum.Up
     };
-    private static Dictionary<DirectionEnum, Vector2> Movements = new Dictionary<DirectionEnum, Vector2>
+    private static Dictionary<DirectionEnum, Coordinate> Movements = new Dictionary<DirectionEnum, Coordinate>
     {
         {
-            DirectionEnum.Right, new Vector2(1, 0)
+            DirectionEnum.Right, new Coordinate(1, 0)
         },
         {
-            DirectionEnum.Down, new Vector2(0, -1)
+            DirectionEnum.Down, new Coordinate(0, -1)
         },
         {
-            DirectionEnum.Left, new Vector2(-1, 0)
+            DirectionEnum.Left, new Coordinate(-1, 0)
         },
         {
-            DirectionEnum.Up, new Vector2(0, 1)
+            DirectionEnum.Up, new Coordinate(0, 1)
         }
     };
 
@@ -108,10 +109,25 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void GameUpdate()
     {
+        // Add new head
         var newHeadCoor = this.Head.Coordinate + Movements[this.CurrentlyFacing];
-        var newHead = Instantiate(this.SegmentPrefab, this.transform);
+        var newHead = Instantiate(this.HeadPrefab, this.transform);
         newHead.Coordinate = newHeadCoor;
         this.Body.Insert(0, newHead);
+
+        // Modify neck (The old head) to be normal segment
+        if (this.Neck != null)
+        {
+            var neckCoor = this.Neck.Coordinate;
+            var newNeck = Instantiate(this.SegmentPrefab, this.transform);
+            newNeck.Coordinate = neckCoor;
+
+            // Replace old neck
+            Destroy(this.Neck.gameObject);
+            this.Body[1] = newNeck;
+        }
+
+        // Check if there are pending pieces from eating fruit or starting game. Otherwise remove tail
         if (this.PendingPieces > 0)
         {
             this.PendingPieces--;

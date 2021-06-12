@@ -20,6 +20,27 @@ public class GameController : MonoBehaviour
         levelRenderer.Render(_level);
     }
 
+    private void Update()
+    {
+
+    }
+
+    private IEnumerator ExecuteGameCycle()
+    {
+        this.GameUpdate();
+
+        // Check for player collision
+        yield return new WaitForSeconds(this.TickSpeed);
+    }
+
+    private void GameUpdate()
+    {
+        foreach (var player in GameObject.FindObjectsOfType<PlayerController>())
+        {
+            player.GameUpdate();
+        }
+    }
+
     public void OnGameOver()
     {
         Debug.Log("GAME OVER");
