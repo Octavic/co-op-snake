@@ -195,7 +195,7 @@ public class LevelState
         }
         else
         {
-            map[x, y].Activate(this, player);
+            map[x, y].Activate(this, renderer, player);
         }
     }
 
