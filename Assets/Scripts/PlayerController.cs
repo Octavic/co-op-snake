@@ -8,13 +8,22 @@ public class PlayerController : MonoBehaviour
     public DirectionEnum CurrentlyFacing;
     public PlayerSegment SegmentPrefab;
     public PlayerSegment HeadPrefab;
-
+    public float BufferDuration;
+    private Queue<PlayerInputBufferItem> InputBuffer = new Queue<PlayerInputBufferItem>();
+    
+    /// <summary>
+    /// All possible directions ordered
+    /// </summary>
     private static List<DirectionEnum> Directions = new List<DirectionEnum>() {
         DirectionEnum.Right,
         DirectionEnum.Down,
         DirectionEnum.Left,
         DirectionEnum.Up
     };
+
+    /// <summary>
+    /// All possible movements based on direction
+    /// </summary>
     private static Dictionary<DirectionEnum, Coordinate> Movements = new Dictionary<DirectionEnum, Coordinate>
     {
         {
@@ -87,19 +96,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyDown(this.ControlKeys[i]))
             {
-                var newFacing = Directions[i];
-
-                if (this.Neck == null)
-                {
-                    this.CurrentlyFacing = newFacing;
-                    continue;
-                }
-
-                var potentialHeadCoor = this.Head.Coordinate + Movements[newFacing];
-                if (potentialHeadCoor != this.Neck.Coordinate)
-                {
-                    this.CurrentlyFacing = newFacing;
-                }
+                this.InputBuffer.Enqueue(new PlayerInputBufferItem(i, Time.timeSinceLevelLoad));
             }
         }
     }
@@ -109,6 +106,34 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void GameUpdate()
     {
+        // Determine facing
+        var currentTime = Time.timeSinceLevelLoad;
+        while(this.InputBuffer.Count > 0)
+        {
+            var input = this.InputBuffer.Dequeue();
+            
+            // Check if input is stale
+            if ((currentTime - input.Time) > this.BufferDuration)
+            {
+                continue;
+            }
+
+            // Check if move is legal
+            var newFacing = Directions[input.KeycodeId];
+            if (this.Neck == null)
+            {
+                this.CurrentlyFacing = newFacing;
+                break;
+            }
+
+            var potentialHeadCoor = this.Head.Coordinate + Movements[newFacing];
+            if (potentialHeadCoor != this.Neck.Coordinate)
+            {
+                this.CurrentlyFacing = newFacing;
+                break;
+            }
+        }
+
         // Add new head
         var newHeadCoor = this.Head.Coordinate + Movements[this.CurrentlyFacing];
         var newHead = Instantiate(this.HeadPrefab, this.transform);
