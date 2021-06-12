@@ -55,4 +55,10 @@ public class RenderScript : MonoBehaviour
             }
         }
     }
+
+    public void SetToEmpty (LevelState level, Coordinate coordinate)
+    {
+        Destroy(tiles[coordinate.x, coordinate.y]);
+        tiles[coordinate.x, coordinate.y] = Instantiate(emptyTile, level.CoordinateToWorldPosition(coordinate), new Quaternion());
+    }
 }

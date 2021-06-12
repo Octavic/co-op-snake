@@ -8,12 +8,14 @@ public static class TileTypes
 {
     public abstract class Tile
     {
-        public abstract void Activate(LevelState level, PlayerController player);
+        public Coordinate coordinate;
+
+        public abstract void Activate(LevelState level, RenderScript renderer, PlayerController player);
     }
 
     public class Wall: Tile
     {
-        public override void Activate (LevelState level, PlayerController player)
+        public override void Activate (LevelState level, RenderScript renderer, PlayerController player)
         {
             GameController.staticInstance.OnGameOver();
             return;
@@ -24,12 +26,14 @@ public static class TileTypes
     {
         public int color;
         private bool collected = false;
-        public override void Activate(LevelState level, PlayerController player)
+        public override void Activate(LevelState level, RenderScript renderer, PlayerController player)
         {
             if (!collected)
             {
                 collected = true;
                 level.starsRemaining--;
+                player.PendingPieces++;
+                renderer.SetToEmpty(level, coordinate);
             }
             return;
         }
