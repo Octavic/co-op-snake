@@ -48,6 +48,7 @@ MonoBehaviour:
   CurrentlyFacing: 0
   SegmentPrefab: {fileID: 2366169118045538931, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
   HeadPrefab: {fileID: 95235225084909946, guid: 7998b90c09a0fe042b30b85e956e46bc, type: 3}
+  BufferDuration: 0.3
   Body:
   - {fileID: 1203075031603988932}
   PendingPieces: 10
