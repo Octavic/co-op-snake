@@ -32,8 +32,9 @@ public class LevelState
 
     private RenderScript renderer;
 
-    public LevelState(string[] file)
+    public LevelState(string[] file, RenderScript renderer)
     {
+        this.renderer = renderer;
         if (file[0] != "snake level format v1") throw new NotSupportedException("Only v1 format is supported");
         horizontalSize = ParseIntAttribute(file[1], "hSize");
         verticalSize = ParseIntAttribute(file[2], "vSize");

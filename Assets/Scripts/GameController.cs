@@ -74,7 +74,7 @@ public class GameController : MonoBehaviour
         if (this.levelRenderer != null)
         {
             var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
-            _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
+            _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries), levelRenderer);
             levelRenderer.Render(_level);
         }
 
