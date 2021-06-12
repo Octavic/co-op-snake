@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController staticInstance;
+
     private LevelState _level;
     public string levelName;
     public RenderScript levelRenderer;
@@ -25,6 +27,9 @@ public class GameController : MonoBehaviour
 
         // Start game
         this.ExecuteGameCoroutine = StartCoroutine(this.ExecuteGame());
+
+        if (staticInstance) Destroy(staticInstance.gameObject);
+        staticInstance = this;
     }
 
     private void Update()
