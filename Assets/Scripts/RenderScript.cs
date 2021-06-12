@@ -29,15 +29,13 @@ public class RenderScript : MonoBehaviour
         mainCamera.orthographicSize = Mathf.Max(level.verticalSize / 2, level.horizontalSize / 3.5f) + 1;
 
         tiles = new GameObject[level.horizontalSize, level.verticalSize];
-        float xOffset = (level.horizontalSize - 1) / 2f;
-        float yOffset = (level.verticalSize - 1) / 2f;
 
         for (int x = 0; x < level.horizontalSize; x++)
         {
             for (int y = 0; y < level.verticalSize; y++)
             {
                 var tile = level[x, y];
-                Vector3 tilePos = new Vector3(x - xOffset, y - yOffset, 0);
+                Vector3 tilePos = level.CoordinateToWorldPosition(new Coordinate(x, y));
                 if(tile == null)
                 {
                     tiles[x, y] = Instantiate(emptyTile, tilePos, new Quaternion());
@@ -56,5 +54,11 @@ public class RenderScript : MonoBehaviour
                 tiles[x, y].name = $"[{x},{y}]";
             }
         }
+    }
+
+    public void SetToEmpty (LevelState level, Coordinate coordinate)
+    {
+        Destroy(tiles[coordinate.x, coordinate.y]);
+        tiles[coordinate.x, coordinate.y] = Instantiate(emptyTile, level.CoordinateToWorldPosition(coordinate), new Quaternion());
     }
 }

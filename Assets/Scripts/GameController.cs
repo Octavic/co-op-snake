@@ -76,6 +76,9 @@ public class GameController : MonoBehaviour
             var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
             _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
             levelRenderer.Render(_level);
+
+            // Set Variables
+            this.TickSpeed = _level.tickSpeed;
         }
 
         // Move grid to line up with the rendered grid
