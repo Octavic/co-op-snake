@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
             if (this.Neck == null)
             {
                 this.CurrentlyFacing = newFacing;
-                continue;
+                break;
             }
 
             var potentialHeadCoor = this.Head.Coordinate + Movements[newFacing];
