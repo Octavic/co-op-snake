@@ -15,19 +15,19 @@ public class PlayerController : MonoBehaviour
         DirectionEnum.Left,
         DirectionEnum.Up
     };
-    private static Dictionary<DirectionEnum, Vector2> Movements = new Dictionary<DirectionEnum, Vector2>
+    private static Dictionary<DirectionEnum, Coordinate> Movements = new Dictionary<DirectionEnum, Coordinate>
     {
         {
-            DirectionEnum.Right, new Vector2(1, 0)
+            DirectionEnum.Right, new Coordinate(1, 0)
         },
         {
-            DirectionEnum.Down, new Vector2(0, -1)
+            DirectionEnum.Down, new Coordinate(0, -1)
         },
         {
-            DirectionEnum.Left, new Vector2(-1, 0)
+            DirectionEnum.Left, new Coordinate(-1, 0)
         },
         {
-            DirectionEnum.Up, new Vector2(0, 1)
+            DirectionEnum.Up, new Coordinate(0, 1)
         }
     };
 
