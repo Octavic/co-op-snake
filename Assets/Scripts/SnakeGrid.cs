@@ -9,7 +9,8 @@ public class SnakeGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        this.GridCellOffset = new Vector2(this.GridSize / 2, -this.GridSize / 2);
+        //this.GridCellOffset = new Vector2(this.GridSize / 2, this.GridSize / 2);
+        this.GridCellOffset = new Vector2();
     }
 
     // Update is called once per frame

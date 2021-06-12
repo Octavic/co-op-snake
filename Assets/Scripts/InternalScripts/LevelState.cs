@@ -40,7 +40,7 @@ public class LevelState
         map = new TileTypes.Tile[horizontalSize, verticalSize];
 
         bool parsingContent = false;
-        for(int i = 0; i < file.Length; i++)
+        for (int i = 0; i < file.Length; i++)
         {
             if (!parsingContent && file[i] == "[CONTENT]")
             {
@@ -49,7 +49,7 @@ public class LevelState
             else if (parsingContent && !string.IsNullOrWhiteSpace(file[i]) && !file[i].StartsWith("#"))
             {
                 string[] p = file[i].Split(' ');
-                switch(p[0])
+                switch (p[0])
                 {
                     case "p":
                         ValidateParameterCount(p, 5, i);
@@ -72,7 +72,7 @@ public class LevelState
                         int startY = ParseIntValue(p[2], i);
                         int width = ParseIntValue(p[3], i);
                         int height = ParseIntValue(p[4], i);
-                        for(int x = startX; x < startX + width; x++)
+                        for (int x = startX; x < startX + width; x++)
                         {
                             for (int y = startY; y < startY + height; y++)
                             {
@@ -110,6 +110,15 @@ public class LevelState
         }
     }
 
+    public Coordinate GetPlayerSpawnPos(int playerId)
+    {
+        return this.playerStartPos[playerId];
+    }
+    public int GetPlayerSpawnLength(int playerId)
+    {
+        return this.playerStartLength[playerId];
+    }
+
     public TileTypes.Tile this[int x, int y]
     {
         get
@@ -131,7 +140,7 @@ public class LevelState
         if (parameters.Length != expectedCount) throw new ArgumentException($"Line {lineNumber}: Expected {expectedCount} parameters, got {parameters.Length} parameters");
     }
 
-    private int ParseIntValue (string source, int lineNumber, bool mustBePositive = true)
+    private int ParseIntValue(string source, int lineNumber, bool mustBePositive = true)
     {
         if (int.TryParse(source, out int value))
         {
@@ -149,7 +158,7 @@ public class LevelState
         return int.Parse(vars[1]);
     }
 
-    private float ParseFloatAttribute (string source, string expectedName)
+    private float ParseFloatAttribute(string source, string expectedName)
     {
         string[] vars = source.Split(':');
         if (vars.Length != 2) throw new ArgumentException($"Error Parsing {source} for {expectedName}: Source must be in the format of [name]:[value]");
@@ -160,14 +169,20 @@ public class LevelState
     /// <summary>
     /// Activates a tile at a given location, which activates special effects related to the place
     /// </summary>
-    public void Activate (int x, int y, PlayerController player)
+    public void Activate(int x, int y, PlayerController player)
     {
         // Die if out of bounds
         if (x < 0 || y < 0 || x >= horizontalSize || y >= verticalSize)
         {
-            GameController.staticInstance.OnGameOver();
+            return;
         }
-        if (map[x, y] == null) return;
-        else map[x, y].Activate(this, player);
+        if (map[x, y] == null)
+        {
+            return;
+        }
+        else
+        {
+            map[x, y].Activate(this, player);
+        }
     }
 }

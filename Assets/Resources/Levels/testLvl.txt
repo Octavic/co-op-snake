@@ -2,13 +2,13 @@
 
 hSize:30
 vSize:30
-tickSpeed:0.5
+tickSpeed:0.2
 playerCount:2
 
 [CONTENT]
 # Player Positions
 p 0 1 1 2
-p 1 18 28 2
+p 1 5 5 2
 
 # Stars
 s 1 1 0
