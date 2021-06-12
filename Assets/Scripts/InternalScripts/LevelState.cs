@@ -18,10 +18,11 @@ public class LevelState
     public int verticalSize;
     public float tickSpeed;
 
-    Coordinate? aPosition;
-    Coordinate? bPosition;
-    int aLength;
-    int bLength;
+    public int starsRemaining;
+
+    public readonly int playerCount;
+    Coordinate[] playerStartPos;
+    int[] playerStartLength;
 
     private TileTypes.Tile[,] map;
 
@@ -31,6 +32,10 @@ public class LevelState
         horizontalSize = ParseIntAttribute(file[1], "hSize");
         verticalSize = ParseIntAttribute(file[2], "vSize");
         tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
+        playerCount = ParseIntAttribute(file[4], "playerCount");
+
+        playerStartPos = new Coordinate[playerCount];
+        playerStartLength = new int[playerCount];
 
         map = new TileTypes.Tile[horizontalSize, verticalSize];
 
@@ -46,18 +51,19 @@ public class LevelState
                 string[] p = file[i].Split(' ');
                 switch(p[0])
                 {
-                    case "a":
-                        ValidateParameterCount(p, 4, i);
-                        if (aPosition.HasValue) throw new Exception("A postion was defined twice");
-                        aPosition = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
-                        aLength = ParseIntValue(p[3], i);
-                        break;
-
-                    case "b":
-                        ValidateParameterCount(p, 4, i);
-                        if (bPosition.HasValue) throw new Exception("B postion was defined twice");
-                        bPosition = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
-                        bLength = ParseIntValue(p[3], i);
+                    case "p":
+                        ValidateParameterCount(p, 5, i);
+                        int playerIdentifier = ParseIntValue(p[1], i);
+                        if (playerIdentifier >= playerCount)
+                        {
+                            throw new ArgumentException($"Player {playerIdentifier} is outside the index. Only {playerCount} players were specified");
+                        }
+                        if (playerStartLength[playerIdentifier] != 0)
+                        {
+                            throw new Exception($"Player {playerIdentifier} postion was defined twice");
+                        }
+                        playerStartPos[playerIdentifier] = new Coordinate(ParseIntValue(p[2], i), ParseIntValue(p[3], i));
+                        playerStartLength[playerIdentifier] = ParseIntValue(p[4], i);
                         break;
 
                     case "w":
@@ -84,7 +90,7 @@ public class LevelState
                         Debug.Log($"{i},[{starX},{starY}]{horizontalSize},{verticalSize}");
                         map[starX, starY] = new TileTypes.Star()
                         {
-                            color = p[3]
+                            color = ParseIntValue(p[3], i)
                         };
                         break;
 
@@ -95,9 +101,12 @@ public class LevelState
             }
         }
 
-        if(!aPosition.HasValue || !bPosition.HasValue)
+        for (int i = 0; i < playerStartLength.Length; i++)
         {
-            throw new ArgumentException("The map does not specify the starting conditions of A and B!");
+            if (playerStartLength[i] == 0)
+            {
+                throw new ArgumentException($"The map does not specify the starting conditions of Player {i}!");
+            }
         }
     }
 
@@ -106,6 +115,14 @@ public class LevelState
         get
         {
             return map[x, y];
+        }
+    }
+
+    public bool StarsCollected
+    {
+        get
+        {
+            return starsRemaining == 0;
         }
     }
 
@@ -138,5 +155,19 @@ public class LevelState
         if (vars.Length != 2) throw new ArgumentException($"Error Parsing {source} for {expectedName}: Source must be in the format of [name]:[value]");
         if (vars[0] != expectedName) throw new ArgumentException($"Expected attribute name {expectedName}, got {vars[0]}");
         return float.Parse(vars[1]);
+    }
+
+    /// <summary>
+    /// Activates a tile at a given location, which activates special effects related to the place
+    /// </summary>
+    public void Activate (int x, int y, PlayerController player)
+    {
+        // Die if out of bounds
+        if (x < 0 || y < 0 || x >= horizontalSize || y >= verticalSize)
+        {
+            GameController.staticInstance.OnGameOver();
+        }
+        if (map[x, y] == null) return;
+        else map[x, y].Activate(this, player);
     }
 }

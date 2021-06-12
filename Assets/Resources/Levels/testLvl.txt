@@ -3,16 +3,17 @@
 hSize:30
 vSize:30
 tickSpeed:0.5
+playerCount:2
 
 [CONTENT]
 # Player Positions
-a 1 1 2
-b 18 28 2
+p 0 1 1 2
+p 1 18 28 2
 
 # Stars
-s 1 1 a
-s 10 10 a
-s 19 20 b
+s 1 1 0
+s 10 10 0
+s 19 20 1
 
 # Walls
 w 5 10 2 3

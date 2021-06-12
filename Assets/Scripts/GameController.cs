@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController staticInstance;
+
     private LevelState _level;
 
     public string levelName;
@@ -15,6 +17,9 @@ public class GameController : MonoBehaviour
 
     public void Start()
     {
+        if (staticInstance) Destroy(staticInstance.gameObject);
+        staticInstance = this;
+
         var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
         _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries));
         levelRenderer.Render(_level);

@@ -8,22 +8,29 @@ public static class TileTypes
 {
     public abstract class Tile
     {
-        public abstract void Activate(PlayerController player);
+        public abstract void Activate(LevelState level, PlayerController player);
     }
 
     public class Wall: Tile
     {
-        public override void Activate (PlayerController player)
+        public override void Activate (LevelState level, PlayerController player)
         {
+            GameController.staticInstance.OnGameOver();
             return;
         }
     }
 
     public class Star : Tile
     {
-        public string color;
-        public override void Activate(PlayerController player)
+        public int color;
+        private bool collected = false;
+        public override void Activate(LevelState level, PlayerController player)
         {
+            if (!collected)
+            {
+                collected = true;
+                level.starsRemaining--;
+            }
             return;
         }
     }
