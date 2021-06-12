@@ -26,6 +26,12 @@ public class LevelState
 
     private TileTypes.Tile[,] map;
 
+    // Offset for unity transform positions
+    private float xOffset;
+    private float yOffset;
+
+    private RenderScript renderer;
+
     public LevelState(string[] file)
     {
         if (file[0] != "snake level format v1") throw new NotSupportedException("Only v1 format is supported");
@@ -38,6 +44,9 @@ public class LevelState
         playerStartLength = new int[playerCount];
 
         map = new TileTypes.Tile[horizontalSize, verticalSize];
+
+        xOffset = (horizontalSize - 1) / 2f;
+        yOffset = (verticalSize - 1) / 2f;
 
         bool parsingContent = false;
         for(int i = 0; i < file.Length; i++)
@@ -77,7 +86,10 @@ public class LevelState
                             for (int y = startY; y < startY + height; y++)
                             {
                                 if (x >= horizontalSize || y >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
-                                map[x, y] = new TileTypes.Wall();
+                                map[x, y] = new TileTypes.Wall()
+                                {
+                                    coordinate = new Coordinate(x, y)
+                                };
                             }
                         }
                         break;
@@ -90,6 +102,7 @@ public class LevelState
                         Debug.Log($"{i},[{starX},{starY}]{horizontalSize},{verticalSize}");
                         map[starX, starY] = new TileTypes.Star()
                         {
+                            coordinate = new Coordinate(starX, starY),
                             color = ParseIntValue(p[3], i)
                         };
                         break;
@@ -168,6 +181,11 @@ public class LevelState
             GameController.staticInstance.OnGameOver();
         }
         if (map[x, y] == null) return;
-        else map[x, y].Activate(this, player);
+        else map[x, y].Activate(this, renderer, player);
+    }
+
+    public Vector3 CoordinateToWorldPosition (Coordinate coordinate)
+    {
+        return new Vector3(coordinate.x - xOffset, coordinate.y - yOffset);
     }
 }
