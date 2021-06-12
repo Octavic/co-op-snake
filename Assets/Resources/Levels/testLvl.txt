@@ -4,11 +4,15 @@ hSize:20
 vSize:30
 tickSpeed:0.5
 
+[CONTENT]
+# Player Positions
 a 1 1 2
 b 18 28 2
 
+# Stars
 s 10 10 a
-s 20 20 b
+s 19 20 b
 
+# Walls
 w 5 10 2 3
 w 4 20 2 3
