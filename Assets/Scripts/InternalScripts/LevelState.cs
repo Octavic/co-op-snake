@@ -35,87 +35,197 @@ public class LevelState
     public LevelState(string[] file, RenderScript renderer)
     {
         this.renderer = renderer;
-        if (file[0] != "snake level format v1") throw new NotSupportedException("Only v1 format is supported");
-        horizontalSize = ParseIntAttribute(file[1], "hSize");
-        verticalSize = ParseIntAttribute(file[2], "vSize");
-        tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
-        playerCount = ParseIntAttribute(file[4], "playerCount");
-
-        playerStartPos = new Coordinate[playerCount];
-        playerStartLength = new int[playerCount];
-
-        map = new TileTypes.Tile[horizontalSize, verticalSize];
-
-        xOffset = (horizontalSize - 1) / 2f;
-        yOffset = (verticalSize - 1) / 2f;
-
-        bool parsingContent = false;
-        for (int i = 0; i < file.Length; i++)
+        if (file[0] == "snake level format v1")
         {
-            if (!parsingContent && file[i] == "[CONTENT]")
+            horizontalSize = ParseIntAttribute(file[1], "hSize");
+            verticalSize = ParseIntAttribute(file[2], "vSize");
+            tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
+            playerCount = ParseIntAttribute(file[4], "playerCount");
+
+            playerStartPos = new Coordinate[playerCount];
+            playerStartLength = new int[playerCount];
+
+            map = new TileTypes.Tile[horizontalSize, verticalSize];
+
+            xOffset = (horizontalSize - 1) / 2f;
+            yOffset = (verticalSize - 1) / 2f;
+
+            bool parsingContent = false;
+            for (int i = 0; i < file.Length; i++)
             {
-                parsingContent = true;
-            }
-            else if (parsingContent && !string.IsNullOrWhiteSpace(file[i]) && !file[i].StartsWith("#"))
-            {
-                string[] p = file[i].Split(' ');
-                switch (p[0])
+                if (!parsingContent && file[i] == "[CONTENT]")
                 {
-                    case "p":
-                        ValidateParameterCount(p, 5, i);
-                        int playerIdentifier = ParseIntValue(p[1], i);
-                        if (playerIdentifier >= playerCount)
-                        {
-                            throw new ArgumentException($"Player {playerIdentifier} is outside the index. Only {playerCount} players were specified");
-                        }
-                        if (playerStartLength[playerIdentifier] != 0)
-                        {
-                            throw new Exception($"Player {playerIdentifier} postion was defined twice");
-                        }
-                        playerStartPos[playerIdentifier] = new Coordinate(ParseIntValue(p[2], i), ParseIntValue(p[3], i));
-                        playerStartLength[playerIdentifier] = ParseIntValue(p[4], i);
-                        break;
-
-                    case "w":
-                        ValidateParameterCount(p, 5, i);
-                        int startX = ParseIntValue(p[1], i);
-                        int startY = ParseIntValue(p[2], i);
-                        int width = ParseIntValue(p[3], i);
-                        int height = ParseIntValue(p[4], i);
-                        for (int x = startX; x < startX + width; x++)
-                        {
-                            for (int y = startY; y < startY + height; y++)
+                    parsingContent = true;
+                }
+                else if (parsingContent && !string.IsNullOrWhiteSpace(file[i]) && !file[i].StartsWith("#"))
+                {
+                    string[] p = file[i].Split(' ');
+                    switch (p[0])
+                    {
+                        case "p":
+                            ValidateParameterCount(p, 5, i);
+                            int playerIdentifier = ParseIntValue(p[1], i);
+                            if (playerIdentifier >= playerCount)
                             {
-                                if (x >= horizontalSize || y >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
-                                map[x, y] = new TileTypes.Wall()
-                                {
-                                    coordinate = new Coordinate(x, y)
-                                };
+                                throw new ArgumentException($"Player {playerIdentifier} is outside the index. Only {playerCount} players were specified");
                             }
-                        }
-                        break;
+                            if (playerStartLength[playerIdentifier] != 0)
+                            {
+                                throw new Exception($"Player {playerIdentifier} postion was defined twice");
+                            }
+                            playerStartPos[playerIdentifier] = new Coordinate(ParseIntValue(p[2], i), ParseIntValue(p[3], i));
+                            playerStartLength[playerIdentifier] = ParseIntValue(p[4], i);
+                            break;
 
-                    case "s":
-                        ValidateParameterCount(p, 4, i);
-                        int starX = ParseIntValue(p[1], i);
-                        int starY = ParseIntValue(p[2], i);
-                        if (starX >= horizontalSize || starY >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
-                        starsRemaining++;
-                        //Debug.Log($"{i},[{starX},{starY}]{horizontalSize},{verticalSize}");
-                        map[starX, starY] = new TileTypes.Star()
-                        {
-                            coordinate = new Coordinate(starX, starY),
-                            ownerPlayerId = ParseIntValue(p[3], i)
-                        };
-                        break;
+                        case "w":
+                            ValidateParameterCount(p, 5, i);
+                            int startX = ParseIntValue(p[1], i);
+                            int startY = ParseIntValue(p[2], i);
+                            int width = ParseIntValue(p[3], i);
+                            int height = ParseIntValue(p[4], i);
+                            for (int x = startX; x < startX + width; x++)
+                            {
+                                for (int y = startY; y < startY + height; y++)
+                                {
+                                    if (x >= horizontalSize || y >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
+                                    map[x, y] = new TileTypes.Wall()
+                                    {
+                                        coordinate = new Coordinate(x, y)
+                                    };
+                                }
+                            }
+                            break;
+
+                        case "s":
+                            ValidateParameterCount(p, 4, i);
+                            int starX = ParseIntValue(p[1], i);
+                            int starY = ParseIntValue(p[2], i);
+                            if (starX >= horizontalSize || starY >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
+                            map[starX, starY] = new TileTypes.Star()
+                            {
+                                coordinate = new Coordinate(starX, starY),
+                                ownerPlayerId = ParseIntValue(p[3], i)
+                            };
+                            starsRemaining++;
+                            break;
 
 
-                    default:
-                        throw new Exception($"Line {i}: Unsupported Content Type {p[0]}");
+                        default:
+                            throw new Exception($"Line {i}: Unsupported Content Type {p[0]}");
+                    }
                 }
             }
         }
+        else if (file[0] == "snake level format v2")
+        {
+            horizontalSize = ParseIntAttribute(file[1], "hSize");
+            verticalSize = ParseIntAttribute(file[2], "vSize");
+            tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
+            playerCount = ParseIntAttribute(file[4], "playerCount");
 
+            playerStartPos = new Coordinate[playerCount];
+            playerStartLength = new int[playerCount];
+
+            map = new TileTypes.Tile[horizontalSize, verticalSize];
+
+            xOffset = (horizontalSize - 1) / 2f;
+            yOffset = (verticalSize - 1) / 2f;
+
+            // Parse Player starting info
+            bool parsingContent = false;
+            for (int i = 0; i < file.Length; i++)
+            {
+                if (!parsingContent && file[i] == "[PLAYERS]")
+                {
+                    parsingContent = true;
+                }
+                else if (parsingContent && !string.IsNullOrWhiteSpace(file[i]) && !file[i].StartsWith("#"))
+                {
+                    if (file[i] == "[PLAYERS END]")
+                    {
+                        break;
+                    }
+                    string[] p = file[i].Split(' ');
+                    ValidateParameterCount(p, 4, i);
+                    int playerIdentifier = ParseIntValue(p[0], i);
+                    if (playerIdentifier >= playerCount)
+                    {
+                        throw new ArgumentException($"Player {playerIdentifier} is outside the index. Only {playerCount} players were specified");
+                    }
+                    if (playerStartLength[playerIdentifier] != 0)
+                    {
+                        throw new Exception($"Player {playerIdentifier} postion was defined twice");
+                    }
+                    playerStartPos[playerIdentifier] = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
+                    playerStartLength[playerIdentifier] = ParseIntValue(p[3], i);
+                }
+            }
+
+            parsingContent = false;
+            int lineIndex = 0;
+            for (int i = 0; i < file.Length; i++)
+            {
+                if (!parsingContent && file[i] == "[CONTENT]")
+                {
+                    parsingContent = true;
+                }
+                else if (parsingContent && !string.IsNullOrWhiteSpace(file[i]) && !file[i].StartsWith("#"))
+                {
+                    if(file[i] == "[CONTENT END]")
+                    {
+                        break;
+                    }
+                    if (file[i].Length != horizontalSize)
+                    {
+                        throw new Exception($"Line {i}: content has length {file[i].Length}, which is not the correct horizontal size of {horizontalSize}");
+                    }
+                    if (lineIndex >= verticalSize)
+                    {
+                        throw new Exception($"Line {i}: Too many horizontal lines of content. Expected ${verticalSize} lines");
+                    }
+                    for (int j = 0; j < file[i].Length; j++)
+                    {
+                        int playerIndex = file[i][j] - '0';
+                        if (playerIndex >= 0 && playerIndex < playerCount)
+                        {
+                            starsRemaining++;
+                            map[j, verticalSize - 1 - lineIndex] = new TileTypes.Star()
+                            {
+                                coordinate = new Coordinate(j, verticalSize - 1 - lineIndex),
+                                ownerPlayerId = playerIndex
+                            };
+                        }
+                        else
+                        {
+                            switch (file[i][j])
+                            {
+                                case ' ':
+                                    break;
+                                case 'w':
+                                    map[j, verticalSize - 1 - lineIndex] = new TileTypes.Wall()
+                                    {
+                                        coordinate = new Coordinate(j, verticalSize - 1 - lineIndex)
+                                    };
+                                    break;
+                                default:
+                                    throw new Exception($"Line {i}:{j}: Unsupported character {file[i][j]}");
+                            }
+                        }
+                    }
+                    lineIndex++;
+                }
+            }
+            if (lineIndex < verticalSize)
+            {
+                throw new Exception($"Too few horizontal lines of content. Expected {verticalSize} lines, got {lineIndex + 1} lines");
+            }
+        }
+        else
+        {
+            throw new NotSupportedException("Only v1 and v2 format are supported");
+        }
+
+        // Validate all players have been moved
         for (int i = 0; i < playerStartLength.Length; i++)
         {
             if (playerStartLength[i] == 0)

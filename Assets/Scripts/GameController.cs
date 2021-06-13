@@ -82,6 +82,7 @@ public class GameController : MonoBehaviour
             this.players.Add(newPlayer);
             var newPlayerPos = this._level.GetPlayerSpawnPos(i);
             newPlayer.Head.Coordinate = newPlayerPos;
+            newPlayer.BufferDuration = this._level.tickSpeed;
         }
     }
 
