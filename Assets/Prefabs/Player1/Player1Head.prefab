@@ -53,11 +53,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.8726415
       objectReference: {fileID: 0}
     - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.94727564
       objectReference: {fileID: 0}
     - target: {fileID: 2366169118045538929, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Color.r
@@ -69,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 9fdf335804cd78249b8b52c2d1315b54, type: 2}
     - target: {fileID: 2366169118045538934, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
       propertyPath: m_Name
-      value: HeadSegment
+      value: Player1Head
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a9278b26f5fe814aafbe533ec6349d6, type: 3}
