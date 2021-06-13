@@ -38,4 +38,15 @@ public static class TileTypes
             return;
         }
     }
+
+    public class Portal : Tile
+    {
+        public Portal ConnectedPortal;
+        public int portalIndex;
+
+        public override void Activate(LevelState level, RenderScript renderer, PlayerController player)
+        {
+            player.Head.Coordinate = ConnectedPortal.coordinate;
+        }
+    }
 }
