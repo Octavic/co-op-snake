@@ -226,6 +226,14 @@ public class GameController : MonoBehaviour
                 this._level.Activate(playerHeadCoordiante.x, playerHeadCoordiante.y, player);
             }
 
+            // Check for changes in tickspeed
+            this._level.tickElapsed++;
+            if(this._level.tickElapsed >= this._level.tickDecrementInterval)
+            {
+                this._level.tickSpeed *= this._level.tickDecrementFactor;
+                this._level.tickElapsed = 0;
+            }
+
             yield return new WaitForSeconds(this._level.tickSpeed);
         }
     }

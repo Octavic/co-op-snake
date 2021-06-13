@@ -2,10 +2,12 @@
 hSize:9
 vSize:9
 tickSpeed:0.35
+tickDecrementFactor:0.9
+tickDecrementInterval:20
 playerCount:2
 [PLAYERS]
-0 1 1 2
-1 7 7 2
+0 1 1 2 0
+1 7 7 2 2
 [PLAYERS END]
 
 [CONTENT]
