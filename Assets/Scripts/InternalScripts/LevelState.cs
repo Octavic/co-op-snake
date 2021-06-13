@@ -17,6 +17,9 @@ public class LevelState
     public int horizontalSize;
     public int verticalSize;
     public float tickSpeed;
+    public float tickDecrementFactor;
+    public int tickDecrementInterval = -1;
+    public int tickElapsed = 0;
 
     public int starsRemaining;
 
@@ -41,7 +44,16 @@ public class LevelState
             horizontalSize = ParseIntAttribute(file[1], "hSize");
             verticalSize = ParseIntAttribute(file[2], "vSize");
             tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
-            playerCount = ParseIntAttribute(file[4], "playerCount");
+            try
+            {
+                tickDecrementFactor = ParseFloatAttribute(file[4], "tickDecrementFactor");
+                tickDecrementInterval = ParseIntAttribute(file[5], "tickDecrementInterval");
+                playerCount = ParseIntAttribute(file[6], "playerCount");
+            }
+            catch
+            {
+                playerCount = ParseIntAttribute(file[4], "playerCount");
+            }
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
@@ -123,7 +135,16 @@ public class LevelState
             horizontalSize = ParseIntAttribute(file[1], "hSize");
             verticalSize = ParseIntAttribute(file[2], "vSize");
             tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
-            playerCount = ParseIntAttribute(file[4], "playerCount");
+            try
+            {
+                tickDecrementFactor = ParseFloatAttribute(file[4], "tickDecrementFactor");
+                tickDecrementInterval = ParseIntAttribute(file[5], "tickDecrementInterval");
+                playerCount = ParseIntAttribute(file[6], "playerCount");
+            }
+            catch
+            {
+                playerCount = ParseIntAttribute(file[4], "playerCount");
+            }
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
@@ -219,6 +240,7 @@ public class LevelState
                                 case '#':
                                 case '$':
                                 case '%':
+                                case '^':
                                 case '&':
                                 case '*':
                                 case '~':
