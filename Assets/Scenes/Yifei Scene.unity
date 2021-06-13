@@ -477,6 +477,7 @@ MonoBehaviour:
   emptyTile: {fileID: 2230063531616197720, guid: d476aaa7260316e47ae036defd91fd2f, type: 3}
   wallTile: {fileID: 2123589179996810194, guid: eda9774c3b4b16749b05418de01ae54c, type: 3}
   starTile: {fileID: 2746868760496628487, guid: 990fa7f6baf93644a9c54940fff72904, type: 3}
+  portalTile: {fileID: 2746868760496628487, guid: 5139694e1d6686648910a5625cf61085, type: 3}
 --- !u!4 &594650551
 Transform:
   m_ObjectHideFlags: 0
@@ -1617,14 +1618,20 @@ MonoBehaviour:
   ScorePerLevel: 100
   ExpectedTime: 90
   PlayerCount: 2
-  CurrentLevel: 1
-  LevelTotal: 2
+  CurrentLevel: 7
+  LevelTotal: 7
   LevelText: {fileID: 982720570}
   HintText: {fileID: 1249006780}
   TimeText: {fileID: 1788025061}
   Hints:
   - Touch heads to complete the level
   - you must collect all stars
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Portal time!
   FadeEffect: {fileID: 652386430}
   FlashEffect: {fileID: 1535367760}
   levelRenderer: {fileID: 594650550}
@@ -2016,6 +2023,7 @@ GameObject:
   - component: {fileID: 2075994008}
   - component: {fileID: 2075994010}
   - component: {fileID: 2075994009}
+  - component: {fileID: 2075994011}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2084,3 +2092,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2075994007}
   m_CullTransparentMesh: 1
+--- !u!114 &2075994011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075994007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 10, y: 10}
+  m_UseGraphicAlpha: 1
