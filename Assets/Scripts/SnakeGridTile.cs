@@ -22,7 +22,7 @@ public abstract class SnakeGridTile : MonoBehaviour
             }
         }
     }
-    private Coordinate _coordinate;
+    public Coordinate _coordinate;
 
     /// <summary>
     /// Called when the player's head tile collides with this tile

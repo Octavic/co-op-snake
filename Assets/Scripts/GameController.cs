@@ -5,22 +5,24 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController staticInstance;
     public int PlayerCount;
 
-    private LevelState _level;
     public string levelName;
     public RenderScript levelRenderer;
     public CountdownOverlay Countdown;
     public GameOverOverlay GameOver;
+    public LevelCompleteOverlay LevelComplete;
 
     public List<PlayerController> PlayerPrefabs;
     public SnakeGrid Grid;
-    public float Score;
+
+    public float Score { get; private set; }
     public bool IsGameOver { get; private set; }
 
-    private List<PlayerController> players;
+    public static GameController staticInstance;
 
+    private List<PlayerController> players;
+    private LevelState _level;
     private Coroutine ExecuteGameCoroutine;
 
     public void Start()
@@ -80,6 +82,7 @@ public class GameController : MonoBehaviour
             this.players.Add(newPlayer);
             var newPlayerPos = this._level.GetPlayerSpawnPos(i);
             newPlayer.Head.Coordinate = newPlayerPos;
+            newPlayer.BufferDuration = this._level.tickSpeed;
         }
     }
 
@@ -87,8 +90,9 @@ public class GameController : MonoBehaviour
     {
         this.IsGameOver = false;
 
-        // Hide gameover overlay
+        // Hide all other overlays
         this.GameOver.Hide();
+        this.LevelComplete.Hide();
 
         // Reset score
         this.Score = 0;
@@ -137,6 +141,19 @@ public class GameController : MonoBehaviour
             // Update
             this.GameUpdate();
 
+            // Check for win condition
+            if (this._level.StarsCollected)
+            {
+                var player1HeadCoor = this.players[0].Head.Coordinate;
+                var player2HeadCoor = this.players[1].Head.Coordinate;
+
+                if (player1HeadCoor.DistanceTo(player2HeadCoor) <= 1)
+                {
+                    this.OnLevelComplete();
+                    continue;
+                }
+            }
+
             // Check for player collision
             foreach (var player in this.players)
             {
@@ -146,7 +163,8 @@ public class GameController : MonoBehaviour
                 foreach (var checkPlayer in this.players)
                 {
                     // Skip head against head collision check
-                    for (int i = 1; i < checkPlayer.Body.Count; i++)
+                    var startingIndex = player == checkPlayer ? 1 : 0;
+                    for (int i = startingIndex; i < checkPlayer.Body.Count; i++)
                     {
                         var tile = checkPlayer.Body[i];
                         if (tile.Coordinate == playerHeadCoordiante)
@@ -172,10 +190,23 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void OnLevelComplete()
+    {
+        this.IsGameOver = true;
+        this.LevelComplete.SetScore(this.Score);
+        this.LevelComplete.Show();
+
+        foreach(var player in this.players)
+        {
+            player.OnLevelComplete();
+        }
+    }
+
     public void OnGameOver()
     {
         this.IsGameOver = true;
-        this.GameOver.Show(this.Score);
+        this.GameOver.SetScore(this.Score);
+        this.GameOver.Show();
     }
 
     public void AddScore(float score)
