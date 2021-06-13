@@ -228,7 +228,7 @@ public class GameController : MonoBehaviour
 
             // Check for changes in tickspeed
             this._level.tickElapsed++;
-            if(this._level.tickElapsed >= this._level.tickDecrementInterval)
+            if(this._level.tickDecrementInterval != -1 && this._level.tickElapsed >= this._level.tickDecrementInterval)
             {
                 this._level.tickSpeed *= this._level.tickDecrementFactor;
                 this._level.tickElapsed = 0;
