@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     private LevelState _level;
     public string levelName;
     public RenderScript levelRenderer;
+    public Overlay OverlayObject;
 
     public List<PlayerController> PlayerPrefabs;
     public SnakeGrid Grid;
@@ -20,6 +21,13 @@ public class GameController : MonoBehaviour
 
     public void Start()
     {
+        // Keep track of static isntance
+        if (staticInstance)
+        {
+            Destroy(staticInstance.gameObject);
+        }
+        staticInstance = this;
+
         this.StartGame();
     }
 
@@ -30,6 +38,7 @@ public class GameController : MonoBehaviour
 
     private void DestroyOldGame()
     {
+        // Destroy players
         if (this.players != null)
         {
             foreach (var player in this.players)
@@ -39,6 +48,7 @@ public class GameController : MonoBehaviour
             this.players = null;
         }
 
+        // Stop coroutine
         if (this.ExecuteGameCoroutine != null)
         {
             StopCoroutine(this.ExecuteGameCoroutine);
@@ -74,19 +84,16 @@ public class GameController : MonoBehaviour
         if (this.levelRenderer != null)
         {
             var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
-            _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries), levelRenderer);
+            _level = new LevelState(
+                levelAsset.text.Split(new string[] { "\r\n" }, 
+                System.StringSplitOptions.RemoveEmptyEntries), 
+                levelRenderer
+            );
             levelRenderer.Render(_level);
         }
 
         // Move grid to line up with the rendered grid
-        this.Grid.transform.position = this.levelRenderer.tiles[0, 0].transform.position;
-
-        // Keep track of static isntance
-        if (staticInstance)
-        {
-            Destroy(staticInstance.gameObject);
-        }
-        staticInstance = this;
+        this.Grid.transform.position = this._level.CoordinateToWorldPosition(new Coordinate(0, 0));
 
         // Spawn players
         this.SpawnPlayers();
@@ -97,6 +104,18 @@ public class GameController : MonoBehaviour
 
     private IEnumerator ExecuteGame()
     {
+        // Do the countdown
+        var countdownBetween = 0.5f;
+
+        this.OverlayObject.Show();
+        this.OverlayObject.ChangeText("3");
+        yield return new WaitForSeconds(countdownBetween);
+        this.OverlayObject.ChangeText("2");
+        yield return new WaitForSeconds(countdownBetween);
+        this.OverlayObject.ChangeText("1");
+        yield return new WaitForSeconds(countdownBetween);
+        this.OverlayObject.Hide();
+
         while (true)
         {
             // Update
@@ -140,5 +159,7 @@ public class GameController : MonoBehaviour
     public void OnGameOver()
     {
         Debug.Log("GAME OVER");
+
+        this.StartGame();
     }
 }
