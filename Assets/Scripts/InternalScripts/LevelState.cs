@@ -23,6 +23,7 @@ public class LevelState
     public readonly int playerCount;
     Coordinate[] playerStartPos;
     int[] playerStartLength;
+    int[] playerStartDirection;
 
     private TileTypes.Tile[,] map;
 
@@ -146,7 +147,7 @@ public class LevelState
                         break;
                     }
                     string[] p = file[i].Split(' ');
-                    ValidateParameterCount(p, 4, i);
+                    ValidateParameterCount(p, 5, i);
                     int playerIdentifier = ParseIntValue(p[0], i);
                     if (playerIdentifier >= playerCount)
                     {
@@ -158,6 +159,7 @@ public class LevelState
                     }
                     playerStartPos[playerIdentifier] = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
                     playerStartLength[playerIdentifier] = ParseIntValue(p[3], i);
+                    playerStartDirection[playerIdentifier] = ParseIntValue(p[4], i);
                 }
             }
 
@@ -279,6 +281,10 @@ public class LevelState
     public int GetPlayerSpawnLength(int playerId)
     {
         return this.playerStartLength[playerId];
+    }
+    public int GetPlayerSpawnDirection(int playerId)
+    {
+        return this.playerStartDirection[playerId];
     }
 
     public TileTypes.Tile this[int x, int y]

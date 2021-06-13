@@ -76,6 +76,7 @@ public class GameController : MonoBehaviour
         {
             var newPlayer = Instantiate(this.PlayerPrefabs[i], this.Grid.transform);
             newPlayer.PendingPieces = this._level.GetPlayerSpawnLength(i) - 1;
+            newPlayer.CurrentlyFacing = (DirectionEnum)this._level.GetPlayerSpawnDirection(i);
             newPlayer.playerIdentifier = i;
             this.players.Add(newPlayer);
             var newPlayerPos = this._level.GetPlayerSpawnPos(i);
