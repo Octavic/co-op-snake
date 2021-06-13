@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Overlay : MonoBehaviour
+public class CountdownOverlay : MonoBehaviour
 {
     public Text OverlayText;
     
