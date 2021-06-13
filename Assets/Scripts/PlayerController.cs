@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public DirectionEnum CurrentlyFacing;
     public PlayerSegment SegmentPrefab;
     public PlayerSegment HeadPrefab;
+    public Material completeSnakeMaterial;
     public float BufferDuration;
     private Queue<PlayerInputBufferItem> InputBuffer = new Queue<PlayerInputBufferItem>();
     
@@ -162,12 +163,10 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator DestroySnake()
     {
-        while (this.Body.Count > 0)
+        for(int i = 0; i < this.Body.Count; i++)
         {
-            Destroy(this.Tail.gameObject);
-            this.Body.RemoveAt(this.Body.Count - 1);
-
-            yield return new WaitForSeconds(0.1f);
+            this.Body[i].GetComponent<SpriteRenderer>().material = completeSnakeMaterial;
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }

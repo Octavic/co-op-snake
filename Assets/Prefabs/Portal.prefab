@@ -99,6 +99,6 @@ MonoBehaviour:
   - {r: 0.29432556, g: 0.045523323, b: 0.8773585, a: 1}
   - {r: 0.13611126, g: 0.9150943, b: 0.047481313, a: 1}
   - {r: 0.43867922, g: 0.881575, b: 1, a: 1}
-  minAlpha: 0.7
-  maxAlpha: 0.8
+  minAlpha: 0.4
+  maxAlpha: 1
   cycleTime: 1
