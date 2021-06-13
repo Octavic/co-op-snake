@@ -11,12 +11,22 @@ public class GameController : MonoBehaviour
 
     public int PlayerCount;
 
+    #region Level
     public int CurrentLevel;
     public int LevelTotal;
     public Text LevelText;
     public Text HintText;
     public Text TimeText;
     public List<string> Hints;
+    #endregion
+
+    #region Audio
+    public AudioPlayer CountDownPlayer;
+    public AudioPlayer MusicPlayer;
+    public AudioPlayer EffectPlayer;
+    public AudioClip CorrectNoise;
+    public AudioClip WrongNoise;
+    #endregion
 
     public FadeBlack FadeEffect;
     public WhiteFlash FlashEffect;
@@ -115,7 +125,7 @@ public class GameController : MonoBehaviour
             this.players.Add(newPlayer);
             var newPlayerPos = this._level.GetPlayerSpawnPos(i);
             newPlayer.Head.Coordinate = newPlayerPos;
-            newPlayer.BufferDuration = this._level.tickSpeed;
+            newPlayer.BufferDuration = this._level.tickSpeed * 1.8f;
         }
     }
 
@@ -169,20 +179,25 @@ public class GameController : MonoBehaviour
     private IEnumerator ExecuteGame()
     {
         // Do the countdown
-        var countdownBetween = 0.5f;
+        var countdownBetween = 0.7f;
 
         this.Countdown.Show();
-        this.Countdown.ChangeText("3");
-        yield return new WaitForSeconds(countdownBetween);
-        this.Countdown.ChangeText("2");
-        yield return new WaitForSeconds(countdownBetween);
-        this.Countdown.ChangeText("1");
-        yield return new WaitForSeconds(countdownBetween);
+        this.CountDownPlayer.Play();
+
+        for (int i = 3; i >= 1; i--)
+        {
+            this.Countdown.ChangeText(i.ToString());
+            yield return new WaitForSeconds(countdownBetween);
+            this.CountDownPlayer.Play();
+        }
         this.Countdown.Hide();
 
         // Start Timer
         this.IsTiming = true;
         this.LevelStartTime = Time.timeSinceLevelLoad;
+
+        // Play music
+        this.MusicPlayer.Play();
 
         while (!this.IsGameOver)
         {
@@ -248,8 +263,12 @@ public class GameController : MonoBehaviour
 
     public void OnLevelComplete()
     {
-        // Stop timer
+        // Stop timer and music
         this.IsTiming = false;
+        this.MusicPlayer.Stop();
+
+        // Play sound
+        this.EffectPlayer.Play(this.CorrectNoise);
 
         // Add score
         this.AddScore(this.ScorePerLevel);
@@ -262,7 +281,7 @@ public class GameController : MonoBehaviour
         this.PlayerWon = true;
         this.FlashEffect.Flash();
 
-      
+
         foreach (var player in this.players)
         {
             player.OnLevelComplete();
@@ -271,8 +290,12 @@ public class GameController : MonoBehaviour
 
     public void OnGameOver()
     {
-        // Stop timer
+        // Stop timer and music
         this.IsTiming = false;
+        this.MusicPlayer.Stop();
+
+        // Play sound
+        this.EffectPlayer.Play(this.WrongNoise);
 
         this.IsGameOver = true;
         this.GameOver.SetScore(this.Score);

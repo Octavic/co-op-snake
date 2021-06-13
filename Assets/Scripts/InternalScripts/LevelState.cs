@@ -44,9 +44,16 @@ public class LevelState
             horizontalSize = ParseIntAttribute(file[1], "hSize");
             verticalSize = ParseIntAttribute(file[2], "vSize");
             tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
-            tickDecrementFactor = ParseFloatAttribute(file[4], "tickDecrementFactor");
-            tickDecrementInterval = ParseIntAttribute(file[5], "tickDecrementInterval");
-            playerCount = ParseIntAttribute(file[6], "playerCount");
+            try
+            {
+                tickDecrementFactor = ParseFloatAttribute(file[4], "tickDecrementFactor");
+                tickDecrementInterval = ParseIntAttribute(file[5], "tickDecrementInterval");
+                playerCount = ParseIntAttribute(file[6], "playerCount");
+            }
+            catch
+            {
+                playerCount = ParseIntAttribute(file[4], "playerCount");
+            }
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
@@ -128,9 +135,16 @@ public class LevelState
             horizontalSize = ParseIntAttribute(file[1], "hSize");
             verticalSize = ParseIntAttribute(file[2], "vSize");
             tickSpeed = ParseFloatAttribute(file[3], "tickSpeed");
-            tickDecrementFactor = ParseFloatAttribute(file[4], "tickDecrementFactor");
-            tickDecrementInterval = ParseIntAttribute(file[5], "tickDecrementInterval");
-            playerCount = ParseIntAttribute(file[6], "playerCount");
+            try
+            {
+                tickDecrementFactor = ParseFloatAttribute(file[4], "tickDecrementFactor");
+                tickDecrementInterval = ParseIntAttribute(file[5], "tickDecrementInterval");
+                playerCount = ParseIntAttribute(file[6], "playerCount");
+            }
+            catch
+            {
+                playerCount = ParseIntAttribute(file[4], "playerCount");
+            }
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];

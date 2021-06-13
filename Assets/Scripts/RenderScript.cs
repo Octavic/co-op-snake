@@ -27,7 +27,7 @@ public class RenderScript : MonoBehaviour
         }
 
         // Set Camera Size
-        mainCamera.orthographicSize = Mathf.Max(level.verticalSize / 2, level.horizontalSize / 3.5f) + 1;
+        mainCamera.orthographicSize = Mathf.Max(level.verticalSize / 2, level.horizontalSize / 3.5f) + 1.5f;
 
         tiles = new GameObject[level.horizontalSize, level.verticalSize];
 
