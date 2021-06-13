@@ -805,7 +805,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3472160010539783753, guid: 7d13a212a7e8e6948b7cc09f0446b108, type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3472160010539783753, guid: 7d13a212a7e8e6948b7cc09f0446b108, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1477,7 +1477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3472160010539783753, guid: 7d13a212a7e8e6948b7cc09f0446b108, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3472160010539783753, guid: 7d13a212a7e8e6948b7cc09f0446b108, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1618,7 +1618,7 @@ MonoBehaviour:
   ExpectedTime: 90
   PlayerCount: 2
   CurrentLevel: 1
-  LevelTotal: 1
+  LevelTotal: 2
   LevelText: {fileID: 982720570}
   HintText: {fileID: 1249006780}
   TimeText: {fileID: 1788025061}

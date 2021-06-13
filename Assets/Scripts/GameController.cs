@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour
 
     public float Score { get; private set; }
     public bool IsGameOver { get; private set; }
+    public bool IsTiming { get; private set; }
     public bool PlayerWon { get; private set; }
 
     public static GameController staticInstance;
@@ -69,10 +70,10 @@ public class GameController : MonoBehaviour
         }
 
         // Show time
-        if (!this.IsGameOver)
+        if (this.IsTiming)
         {
             var timePassed = Time.timeSinceLevelLoad - this.LevelStartTime;
-            this.TimeText.text = timePassed.ToString("N2");
+            this.TimeText.text = timePassed.ToString("0.00");
         }
     }
 
@@ -126,9 +127,6 @@ public class GameController : MonoBehaviour
         this.GameOver.Hide();
         this.LevelComplete.Hide();
 
-        // Set time start
-        this.LevelStartTime = Time.timeSinceLevelLoad;
-
         // Remove old game and game objects
         this.DestroyOldGame();
 
@@ -180,6 +178,10 @@ public class GameController : MonoBehaviour
         this.Countdown.ChangeText("1");
         yield return new WaitForSeconds(countdownBetween);
         this.Countdown.Hide();
+
+        // Start Timer
+        this.IsTiming = true;
+        this.LevelStartTime = Time.timeSinceLevelLoad;
 
         while (!this.IsGameOver)
         {
@@ -237,6 +239,9 @@ public class GameController : MonoBehaviour
 
     public void OnLevelComplete()
     {
+        // Stop timer
+        this.IsTiming = false;
+
         // Add score
         this.AddScore(this.ScorePerLevel);
         var timeToBeat = Time.timeSinceLevelLoad - this.LevelStartTime;
@@ -257,6 +262,9 @@ public class GameController : MonoBehaviour
 
     public void OnGameOver()
     {
+        // Stop timer
+        this.IsTiming = false;
+
         this.IsGameOver = true;
         this.GameOver.SetScore(this.Score);
         this.GameOver.Show();
