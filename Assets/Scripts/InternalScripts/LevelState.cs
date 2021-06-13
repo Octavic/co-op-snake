@@ -45,6 +45,7 @@ public class LevelState
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
+            playerStartDirection = new int[playerCount];
 
             map = new TileTypes.Tile[horizontalSize, verticalSize];
 
@@ -126,6 +127,7 @@ public class LevelState
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
+            playerStartDirection = new int[playerCount];
 
             map = new TileTypes.Tile[horizontalSize, verticalSize];
 

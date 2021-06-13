@@ -4,14 +4,14 @@ vSize:10
 tickSpeed:2
 playerCount:2
 [PLAYERS]
-0 1 1 2 0
+0 1 1 2 3
 1 1 8 2 0
 [PLAYERS END]
 
 [CONTENT]
 wwwwwwwwww
-w        w
-w   www  w
+w  *     w
+w *      w
 w     w  w
 w 10w w  w
 w  10w   w
