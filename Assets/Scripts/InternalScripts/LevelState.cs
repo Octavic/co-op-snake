@@ -104,7 +104,7 @@ public class LevelState
                         map[starX, starY] = new TileTypes.Star()
                         {
                             coordinate = new Coordinate(starX, starY),
-                            color = ParseIntValue(p[3], i)
+                            ownerPlayerId = ParseIntValue(p[3], i)
                         };
                         break;
 
