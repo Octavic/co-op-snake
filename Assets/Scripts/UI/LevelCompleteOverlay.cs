@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverOverlay : BaseOverlay
+public class LevelCompleteOverlay : BaseOverlay
 {
     public Text ScoreText;
     public void SetScore(float score)

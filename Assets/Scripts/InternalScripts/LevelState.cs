@@ -256,7 +256,7 @@ public class LevelState
     {
         get
         {
-            return starsRemaining == 0;
+            return starsRemaining <= 0;
         }
     }
 

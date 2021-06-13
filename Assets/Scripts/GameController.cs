@@ -1,27 +1,45 @@
 ﻿using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
-    public static GameController staticInstance;
+    public float ScorePerLevel;
+    public float ExpectedTime;
+
     public int PlayerCount;
 
-    private LevelState _level;
-    public string levelName;
+    public int CurrentLevel;
+    public int LevelTotal;
+    public Text LevelText;
+    public Text HintText;
+    public Text TimeText;
+    public List<string> Hints;
+
+    public FadeBlack FadeEffect;
+    public WhiteFlash FlashEffect;
+
     public RenderScript levelRenderer;
     public CountdownOverlay Countdown;
     public GameOverOverlay GameOver;
+    public LevelCompleteOverlay LevelComplete;
 
     public List<PlayerController> PlayerPrefabs;
     public SnakeGrid Grid;
-    public float Score;
+
+    public float Score { get; private set; }
     public bool IsGameOver { get; private set; }
+    public bool PlayerWon { get; private set; }
+
+    public static GameController staticInstance;
 
     private List<PlayerController> players;
-
+    private LevelState _level;
     private Coroutine ExecuteGameCoroutine;
+
+    private float LevelStartTime;
 
     public void Start()
     {
@@ -34,12 +52,27 @@ public class GameController : MonoBehaviour
 
         this.StartGame();
     }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && this.IsGameOver)
         {
+            if (this.PlayerWon)
+            {
+                this.CurrentLevel++;
+                if (this.CurrentLevel > this.LevelTotal)
+                {
+                    StartCoroutine(this.OnBeatGame());
+                    return;
+                }
+            }
             this.StartGame();
+        }
+
+        // Show time
+        if (!this.IsGameOver)
+        {
+            var timePassed = Time.timeSinceLevelLoad - this.LevelStartTime;
+            this.TimeText.text = timePassed.ToString("N2");
         }
     }
 
@@ -80,18 +113,21 @@ public class GameController : MonoBehaviour
             this.players.Add(newPlayer);
             var newPlayerPos = this._level.GetPlayerSpawnPos(i);
             newPlayer.Head.Coordinate = newPlayerPos;
+            newPlayer.BufferDuration = this._level.tickSpeed;
         }
     }
 
     public void StartGame()
     {
+        // Reset
         this.IsGameOver = false;
 
-        // Hide gameover overlay
+        // Hide all other overlays
         this.GameOver.Hide();
+        this.LevelComplete.Hide();
 
-        // Reset score
-        this.Score = 0;
+        // Set time start
+        this.LevelStartTime = Time.timeSinceLevelLoad;
 
         // Remove old game and game objects
         this.DestroyOldGame();
@@ -99,13 +135,26 @@ public class GameController : MonoBehaviour
         // load level
         if (this.levelRenderer != null)
         {
-            var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
+            var levelAsset = Resources.Load<TextAsset>($"Levels/{this.CurrentLevel}");
             _level = new LevelState(
                 levelAsset.text.Split(new string[] { "\r\n" },
                 System.StringSplitOptions.RemoveEmptyEntries),
                 levelRenderer
             );
             levelRenderer.Render(_level);
+
+            // Set level text
+            this.LevelText.text = $"LEVEL {this.CurrentLevel}";
+
+            // Set hints
+            if (this.CurrentLevel <= this.Hints.Count)
+            {
+                this.HintText.text = this.Hints[this.CurrentLevel - 1];
+            }
+            else
+            {
+                this.HintText.text = "";
+            }
         }
 
         // Move grid to line up with the rendered grid
@@ -137,6 +186,19 @@ public class GameController : MonoBehaviour
             // Update
             this.GameUpdate();
 
+            // Check for win condition
+            if (this._level.StarsCollected)
+            {
+                var player1HeadCoor = this.players[0].Head.Coordinate;
+                var player2HeadCoor = this.players[1].Head.Coordinate;
+
+                if (player1HeadCoor.DistanceTo(player2HeadCoor) <= 1)
+                {
+                    this.OnLevelComplete();
+                    continue;
+                }
+            }
+
             // Check for player collision
             foreach (var player in this.players)
             {
@@ -146,7 +208,8 @@ public class GameController : MonoBehaviour
                 foreach (var checkPlayer in this.players)
                 {
                     // Skip head against head collision check
-                    for (int i = 1; i < checkPlayer.Body.Count; i++)
+                    var startingIndex = player == checkPlayer ? 1 : 0;
+                    for (int i = startingIndex; i < checkPlayer.Body.Count; i++)
                     {
                         var tile = checkPlayer.Body[i];
                         if (tile.Coordinate == playerHeadCoordiante)
@@ -172,14 +235,43 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void OnLevelComplete()
+    {
+        // Add score
+        this.AddScore(this.ScorePerLevel);
+        var timeToBeat = Time.timeSinceLevelLoad - this.LevelStartTime;
+        this.AddScore(this.ExpectedTime - timeToBeat);
+
+        this.IsGameOver = true;
+        this.LevelComplete.SetScore(this.Score);
+        this.LevelComplete.Show();
+        this.PlayerWon = true;
+        this.FlashEffect.Flash();
+
+      
+        foreach (var player in this.players)
+        {
+            player.OnLevelComplete();
+        }
+    }
+
     public void OnGameOver()
     {
         this.IsGameOver = true;
-        this.GameOver.Show(this.Score);
+        this.GameOver.SetScore(this.Score);
+        this.GameOver.Show();
+        this.PlayerWon = false;
     }
 
     public void AddScore(float score)
     {
         this.Score += score;
+    }
+
+    private IEnumerator OnBeatGame()
+    {
+        this.FadeEffect.ToBlack();
+        yield return new WaitForSeconds(1.5f);
+        SceneManager.LoadScene(2);
     }
 }
