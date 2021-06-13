@@ -14,6 +14,7 @@ public class RenderScript : MonoBehaviour
     public GameObject emptyTile;
     public GameObject wallTile;
     public GameObject starTile;
+    public GameObject portalTile;
 
     public void Render (LevelState level) 
     {
@@ -49,6 +50,11 @@ public class RenderScript : MonoBehaviour
                     tiles[x, y] = Instantiate(emptyTile, tilePos, new Quaternion());
                     var star = Instantiate(starTile, tiles[x,y].transform);
                     star.GetComponent<SpriteRenderer>().color = starColors[((TileTypes.Star)tile).ownerPlayerId];
+                }
+                else if (tile.GetType() == typeof(TileTypes.Portal))
+                {
+                    tiles[x, y] = Instantiate(portalTile, tilePos, new Quaternion());
+                    tiles[x, y].GetComponent<PortalController>()?.AssignColor(((TileTypes.Portal)tile).portalIndex);
                 }
                 tiles[x, y].transform.parent = this.transform;
                 tiles[x, y].name = $"[{x},{y}]";

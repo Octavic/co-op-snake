@@ -23,6 +23,7 @@ public class LevelState
     public readonly int playerCount;
     Coordinate[] playerStartPos;
     int[] playerStartLength;
+    int[] playerStartDirection;
 
     private TileTypes.Tile[,] map;
 
@@ -44,6 +45,7 @@ public class LevelState
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
+            playerStartDirection = new int[playerCount];
 
             map = new TileTypes.Tile[horizontalSize, verticalSize];
 
@@ -125,6 +127,7 @@ public class LevelState
 
             playerStartPos = new Coordinate[playerCount];
             playerStartLength = new int[playerCount];
+            playerStartDirection = new int[playerCount];
 
             map = new TileTypes.Tile[horizontalSize, verticalSize];
 
@@ -146,7 +149,7 @@ public class LevelState
                         break;
                     }
                     string[] p = file[i].Split(' ');
-                    ValidateParameterCount(p, 4, i);
+                    ValidateParameterCount(p, 5, i);
                     int playerIdentifier = ParseIntValue(p[0], i);
                     if (playerIdentifier >= playerCount)
                     {
@@ -158,11 +161,15 @@ public class LevelState
                     }
                     playerStartPos[playerIdentifier] = new Coordinate(ParseIntValue(p[1], i), ParseIntValue(p[2], i));
                     playerStartLength[playerIdentifier] = ParseIntValue(p[3], i);
+                    playerStartDirection[playerIdentifier] = ParseIntValue(p[4], i);
                 }
             }
 
             parsingContent = false;
             int lineIndex = 0;
+            Dictionary<char, TileTypes.Portal> pendingPortals = new Dictionary<char, TileTypes.Portal>();
+            int nextPortalIndex = 0;
+
             for (int i = 0; i < file.Length; i++)
             {
                 if (!parsingContent && file[i] == "[CONTENT]")
@@ -207,6 +214,40 @@ public class LevelState
                                         coordinate = new Coordinate(j, verticalSize - 1 - lineIndex)
                                     };
                                     break;
+                                case '!':
+                                case '@':
+                                case '#':
+                                case '$':
+                                case '%':
+                                case '&':
+                                case '*':
+                                case '~':
+                                case '`':
+                                    char portalKey = file[i][j];
+                                    var newPortal = new TileTypes.Portal()
+                                    {
+                                        coordinate = new Coordinate(j, verticalSize - 1 - lineIndex),
+                                        
+                                    };
+                                    map[j, verticalSize - 1 - lineIndex] = newPortal;
+                                    if (pendingPortals.TryGetValue(portalKey, out var correspondingPortal))
+                                    {
+                                        if (correspondingPortal.ConnectedPortal != null)
+                                        {
+                                            throw new Exception($"There are more than two portals with key {portalKey}");
+                                        }
+                                        newPortal.ConnectedPortal = correspondingPortal;
+                                        newPortal.portalIndex = correspondingPortal.portalIndex;
+                                        correspondingPortal.ConnectedPortal = newPortal;
+                                    }
+                                    else
+                                    {
+                                        newPortal.portalIndex = nextPortalIndex;
+                                        nextPortalIndex++;
+                                        pendingPortals.Add(portalKey, newPortal);
+                                    }
+                                    break;
+
                                 default:
                                     throw new Exception($"Line {i}:{j}: Unsupported character {file[i][j]}");
                             }
@@ -242,6 +283,10 @@ public class LevelState
     public int GetPlayerSpawnLength(int playerId)
     {
         return this.playerStartLength[playerId];
+    }
+    public int GetPlayerSpawnDirection(int playerId)
+    {
+        return this.playerStartDirection[playerId];
     }
 
     public TileTypes.Tile this[int x, int y]
