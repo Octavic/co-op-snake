@@ -24,11 +24,11 @@ public static class TileTypes
 
     public class Star : Tile
     {
-        public int color;
+        public int ownerPlayerId;
         private bool collected = false;
         public override void Activate(LevelState level, RenderScript renderer, PlayerController player)
         {
-            if (!collected && player.playerIdentifier == color)
+            if (!collected && player.playerIdentifier == ownerPlayerId)
             {
                 collected = true;
                 level.starsRemaining--;

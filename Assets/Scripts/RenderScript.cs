@@ -48,7 +48,7 @@ public class RenderScript : MonoBehaviour
                 {
                     tiles[x, y] = Instantiate(emptyTile, tilePos, new Quaternion());
                     var star = Instantiate(starTile, tiles[x,y].transform);
-                    star.GetComponent<SpriteRenderer>().color = starColors[((TileTypes.Star)tile).color];
+                    star.GetComponent<SpriteRenderer>().color = starColors[((TileTypes.Star)tile).ownerPlayerId];
                 }
                 tiles[x, y].transform.parent = this.transform;
                 tiles[x, y].name = $"[{x},{y}]";
