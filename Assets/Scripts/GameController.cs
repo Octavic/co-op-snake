@@ -11,25 +11,41 @@ public class GameController : MonoBehaviour
     private LevelState _level;
     public string levelName;
     public RenderScript levelRenderer;
+    public CountdownOverlay Countdown;
+    public GameOverOverlay GameOver;
 
     public List<PlayerController> PlayerPrefabs;
     public SnakeGrid Grid;
+    public float Score;
+    public bool IsGameOver { get; private set; }
+
     private List<PlayerController> players;
 
     private Coroutine ExecuteGameCoroutine;
 
     public void Start()
     {
+        // Keep track of static isntance
+        if (staticInstance)
+        {
+            Destroy(staticInstance.gameObject);
+        }
+        staticInstance = this;
+
         this.StartGame();
     }
 
     private void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Space) && this.IsGameOver)
+        {
+            this.StartGame();
+        }
     }
 
     private void DestroyOldGame()
     {
+        // Destroy players
         if (this.players != null)
         {
             foreach (var player in this.players)
@@ -39,6 +55,7 @@ public class GameController : MonoBehaviour
             this.players = null;
         }
 
+        // Stop coroutine
         if (this.ExecuteGameCoroutine != null)
         {
             StopCoroutine(this.ExecuteGameCoroutine);
@@ -68,6 +85,14 @@ public class GameController : MonoBehaviour
 
     public void StartGame()
     {
+        this.IsGameOver = false;
+
+        // Hide gameover overlay
+        this.GameOver.Hide();
+
+        // Reset score
+        this.Score = 0;
+
         // Remove old game and game objects
         this.DestroyOldGame();
 
@@ -75,19 +100,16 @@ public class GameController : MonoBehaviour
         if (this.levelRenderer != null)
         {
             var levelAsset = Resources.Load<TextAsset>($"Levels/{levelName}");
-            _level = new LevelState(levelAsset.text.Split(new string[] { "\r\n" }, System.StringSplitOptions.RemoveEmptyEntries), levelRenderer);
+            _level = new LevelState(
+                levelAsset.text.Split(new string[] { "\r\n" },
+                System.StringSplitOptions.RemoveEmptyEntries),
+                levelRenderer
+            );
             levelRenderer.Render(_level);
         }
 
         // Move grid to line up with the rendered grid
-        this.Grid.transform.position = this.levelRenderer.tiles[0, 0].transform.position;
-
-        // Keep track of static isntance
-        if (staticInstance)
-        {
-            Destroy(staticInstance.gameObject);
-        }
-        staticInstance = this;
+        this.Grid.transform.position = this._level.CoordinateToWorldPosition(new Coordinate(0, 0));
 
         // Spawn players
         this.SpawnPlayers();
@@ -98,7 +120,19 @@ public class GameController : MonoBehaviour
 
     private IEnumerator ExecuteGame()
     {
-        while (true)
+        // Do the countdown
+        var countdownBetween = 0.5f;
+
+        this.Countdown.Show();
+        this.Countdown.ChangeText("3");
+        yield return new WaitForSeconds(countdownBetween);
+        this.Countdown.ChangeText("2");
+        yield return new WaitForSeconds(countdownBetween);
+        this.Countdown.ChangeText("1");
+        yield return new WaitForSeconds(countdownBetween);
+        this.Countdown.Hide();
+
+        while (!this.IsGameOver)
         {
             // Update
             this.GameUpdate();
@@ -140,6 +174,12 @@ public class GameController : MonoBehaviour
 
     public void OnGameOver()
     {
-        Debug.Log("GAME OVER");
+        this.IsGameOver = true;
+        this.GameOver.Show(this.Score);
+    }
+
+    public void AddScore(float score)
+    {
+        this.Score += score;
     }
 }
