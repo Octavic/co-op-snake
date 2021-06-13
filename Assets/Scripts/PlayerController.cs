@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public int playerIdentifier;
     public List<KeyCode> ControlKeys;
     public DirectionEnum CurrentlyFacing;
     public PlayerSegment SegmentPrefab;

@@ -28,7 +28,7 @@ public static class TileTypes
         private bool collected = false;
         public override void Activate(LevelState level, RenderScript renderer, PlayerController player)
         {
-            if (!collected)
+            if (!collected && player.playerIdentifier == color)
             {
                 collected = true;
                 level.starsRemaining--;
