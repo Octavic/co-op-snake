@@ -1,0 +1,22 @@
+﻿snake level format v2
+hSize:10
+vSize:10
+tickSpeed:2
+playerCount:2
+[PLAYERS]
+0 1 1 2
+1 1 8 2
+[PLAYERS END]
+
+[CONTENT]
+wwwwwwwwww
+w        w
+w   www  w
+w     w  w
+w 10w w  w
+w  10w   w
+w   10w  w
+w    10  w
+w        w
+wwwwwwwwww
+[CONTENT END]
