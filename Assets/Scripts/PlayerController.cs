@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -135,23 +136,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Add new head
-        var newHeadCoor = this.Head.Coordinate + Movements[this.CurrentlyFacing];
-        var newHead = Instantiate(this.HeadPrefab, this.transform);
-        newHead.Coordinate = newHeadCoor;
-        this.Body.Insert(0, newHead);
+        // Add new piece at head
+        var newTile = Instantiate(this.SegmentPrefab, this.transform);
+        newTile.Coordinate = this.Head.Coordinate;
+        this.Body.Insert(1, newTile);
 
-        // Modify neck (The old head) to be normal segment
-        if (this.Neck != null)
-        {
-            var neckCoor = this.Neck.Coordinate;
-            var newNeck = Instantiate(this.SegmentPrefab, this.transform);
-            newNeck.Coordinate = neckCoor;
-
-            // Replace old neck
-            Destroy(this.Neck.gameObject);
-            this.Body[1] = newNeck;
-        }
+        // Move head
+        this.Head.Coordinate += Movements[this.CurrentlyFacing];
 
         // Check if there are pending pieces from eating fruit or starting game. Otherwise remove tail
         if (this.PendingPieces > 0)
@@ -162,6 +153,21 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(this.Tail.gameObject);
             this.Body.RemoveAt(this.Body.Count - 1);
+        }
+    }
+
+    public void OnLevelComplete()
+    {
+        this.StartCoroutine(this.DestroySnake());
+    }
+    public IEnumerator DestroySnake()
+    {
+        while (this.Body.Count > 0)
+        {
+            Destroy(this.Tail.gameObject);
+            this.Body.RemoveAt(this.Body.Count - 1);
+
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }
