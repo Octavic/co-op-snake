@@ -101,7 +101,6 @@ public class LevelState
                             int starX = ParseIntValue(p[1], i);
                             int starY = ParseIntValue(p[2], i);
                             if (starX >= horizontalSize || starY >= verticalSize) throw new Exception($"Line {i}: size exceeded the dimensions of the map");
-                            Debug.Log($"{i},[{starX},{starY}]{horizontalSize},{verticalSize}");
                             map[starX, starY] = new TileTypes.Star()
                             {
                                 coordinate = new Coordinate(starX, starY),
