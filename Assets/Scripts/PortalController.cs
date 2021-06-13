@@ -5,9 +5,9 @@ using UnityEngine;
 public class PortalController : MonoBehaviour
 {
     public Color[] portalColors;
-    public float minAlpha = 0.7f;
-    public float maxAlpha = 0.8f;
-    public float cycleTime = 1f;
+    public float minAlpha = 0.5f;
+    public float maxAlpha = 1f;
+    public float cycleTime = 2f;
 
     private float clock = 0f;
 
@@ -23,7 +23,17 @@ public class PortalController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        clock += Time.deltaTime;
+        if (initialized)
+        {
+            clock += Time.deltaTime;
+            float cycle = (clock % cycleTime) / cycleTime * 2;
+            if (cycle > 1f)
+            {
+                cycle = 2f - cycle;
+            }
+            currentColor.a = (maxAlpha - minAlpha) * cycle + minAlpha;
+            spriteRender.color = currentColor;
+        }
     }
 
     public void AssignColor (int index)
@@ -35,5 +45,6 @@ public class PortalController : MonoBehaviour
         }
         currentColor = portalColors[index];
         spriteRender.color = currentColor;
+        this.initialized = true;
     }
 }

@@ -2,6 +2,8 @@
 hSize:10
 vSize:10
 tickSpeed:0.2
+tickDecrementFactor:0.9
+tickDecrementInterval:20
 playerCount:2
 [PLAYERS]
 0 1 1 2 3

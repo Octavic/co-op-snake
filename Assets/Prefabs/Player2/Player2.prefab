@@ -44,10 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5da34f3c0d7ae64989d5d50420c71ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerIdentifier: 0
   ControlKeys: 13010000120100001401000011010000
   CurrentlyFacing: 0
   SegmentPrefab: {fileID: 7215873285105258236, guid: c2a275d5c3eb65945b04b0606b045c1c, type: 3}
   HeadPrefab: {fileID: 8326566033097723715, guid: 189e655de371706439fcc719f4039ec2, type: 3}
+  completeSnakeMaterial: {fileID: 2100000, guid: 7e16700bcde75f54d8da6ba43ba7fb21, type: 2}
   BufferDuration: 0.3
   Body:
   - {fileID: 7742554705059295800}
