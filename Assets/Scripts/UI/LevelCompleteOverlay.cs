@@ -7,6 +7,6 @@ public class LevelCompleteOverlay : BaseOverlay
     public Text ScoreText;
     public void SetScore(float score)
     {
-        this.ScoreText.text = "SCORE: " + score.ToString();
+        this.ScoreText.text = "SCORE: " + ((int)score).ToString();
     }
 }

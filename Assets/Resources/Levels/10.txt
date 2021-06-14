@@ -4,20 +4,20 @@ vSize:11
 tickSpeed:0.35
 playerCount:2
 [PLAYERS]
-0 7 7 2 2
-1 1 1 2 0
+0 9 1 2 3
+1 9 9 2 1
 [PLAYERS END]
 
 [CONTENT]
 wwwwwwwwwww
-w 1       w
-w         w
-w    @    w
-w         w
-wwwwwwwwwww
-w         w
-w    @    w
-w         w
-w       0 w
+w   @w@   w
+w 0  w    w
+w  1 w  0 w
+w    w    w
+wwwwww    w
+w    w    w
+w  1 w  1 w
+w 0  w    w
+w   %w%   w
 wwwwwwwwwww
 [CONTENT END]
